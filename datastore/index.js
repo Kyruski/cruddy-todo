@@ -10,13 +10,15 @@ var items = {};
 exports.create = (text, callback) => {
 
   counter.getNextUniqueId((err, id) => {
-  
-    fs.writeFile(`${id}.txt`, text, (err) => {
+    // if (!fs.existsSync(__dirname + '/testData/')) {
+    //   fs.mkdirSync(__dirname + '/testData/');
+    // }
+    fs.writeFile(__dirname + `/../test/testData/${id}.txt`, text, (err) => {
       if (err) {
         throw ('error writing todo number ', id);
       } else {
-        console.log(typeof `${id}.txt`);
-        callback(null, text);
+        console.log(`${id}.txt`);
+        callback(null, {text: text, id: id});
       }
     });
   });
