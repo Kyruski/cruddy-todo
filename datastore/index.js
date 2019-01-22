@@ -57,24 +57,45 @@ exports.readOne = (id, callback) => {
 };
 
 exports.update = (id, text, callback) => {
-  var item = items[id];
-  if (!item) {
-    callback(new Error(`No item with id: ${id}`));
+  if (!fs.existsSync(this.dataDir + `/${id}.txt`)) {
+    callback(100, id);
   } else {
-    items[id] = text;
-    callback(null, { id, text });
+    fs.writeFile(this.dataDir + `/${id}.txt`, text, (err) => {
+      if (err) {
+        throw ('error writing todo number ', id);
+      } else {
+        console.log('this is id, ', id, ' and this is text, ', text);
+        callback(null, {text: text, id: id});
+      }
+    });
   }
+  // var item = items[id];
+  // if (!item) {
+  //   callback(new Error(`No item with id: ${id}`));
+  // } else {
+  //   items[id] = text;
+  //   callback(null, { id, text });
+  // }
 };
 
 exports.delete = (id, callback) => {
-  var item = items[id];
-  delete items[id];
-  if (!item) {
-    // report an error if item not found
-    callback(new Error(`No item with id: ${id}`));
-  } else {
-    callback();
+  if (!fs.existsSync(this.dataDir + `/${id}.txt`)) {
+    callback(100, id);
   }
+  fs.unlinkSync(this.dataDir + `/${id}.txt`);
+  if (!fs.existsSync(this.dataDir + `/${id}.txt`)) {
+    callback(100, id);
+  } else {
+    console.log('Successfully deleted file ', id, '.txt');
+  }
+  // var item = items[id];
+  // delete items[id];
+  // if (!item) {
+  //   // report an error if item not found
+  //   callback(new Error(`No item with id: ${id}`));
+  // } else {
+  //   callback();
+  // }
 };
 
 // Config+Initialization code -- DO NOT MODIFY /////////////////////////////////
