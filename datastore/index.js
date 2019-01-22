@@ -8,16 +8,16 @@ var items = {};
 // Public API - Fix these CRUD functions ///////////////////////////////////////
 
 exports.create = (text, callback) => {
+  // console.log(this.dataDir);
 
   counter.getNextUniqueId((err, id) => {
     // if (!fs.existsSync(__dirname + '/testData/')) {
     //   fs.mkdirSync(__dirname + '/testData/');
     // }
-    fs.writeFile(__dirname + `/../test/testData/${id}.txt`, text, (err) => {
+    fs.writeFile(this.dataDir + `/${id}.txt`, text, (err) => {
       if (err) {
         throw ('error writing todo number ', id);
       } else {
-        console.log(`${id}.txt`);
         callback(null, {text: text, id: id});
       }
     });
@@ -25,10 +25,13 @@ exports.create = (text, callback) => {
 };
 
 exports.readAll = (callback) => {
-  var data = _.map(items, (text, id) => {
-    return { id, text };
+  const todosArray = [];
+  let files = fs.readdirSync(this.dataDir);
+  files.forEach(file => {
+    const fileText = String(fs.readFileSync(this.dataDir + '/' + file));
+    todosArray.push( {id: file.slice(0, 5), text: fileText} );
   });
-  callback(null, data);
+  callback(null, todosArray);
 };
 
 exports.readOne = (id, callback) => {
