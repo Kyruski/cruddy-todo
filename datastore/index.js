@@ -35,12 +35,25 @@ exports.readAll = (callback) => {
 };
 
 exports.readOne = (id, callback) => {
-  var text = items[id];
-  if (!text) {
-    callback(new Error(`No item with id: ${id}`));
-  } else {
-    callback(null, { id, text });
-  }
+  console.log(id);
+  fs.readFile(this.dataDir + '/' + id + '.txt', (err, fileData) => {
+    if (err) {
+      callback(err, 0);
+    } else {
+      callback(err, { id: id, text: String(fileData) });
+    }
+  });
+  // if (fs.existsSync(this.dataDir + '/' + id + '.txt')) {
+  //   const fileText = String(fs.readFileSync(this.dataDir + '/' + id + '.txt'));
+  // } else {
+  //   throw('File does not exist');
+  // }
+  // var text = items[id];
+  // if (!text) {
+  //   callback(new Error(`No item with id: ${id}`));
+  // } else {
+  //   callback(null, { id, text });
+  // }
 };
 
 exports.update = (id, text, callback) => {
