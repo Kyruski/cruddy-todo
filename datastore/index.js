@@ -8,9 +8,18 @@ var items = {};
 // Public API - Fix these CRUD functions ///////////////////////////////////////
 
 exports.create = (text, callback) => {
-  var id = counter.getNextUniqueId();
-  items[id] = text;
-  callback(null, { id, text });
+
+  counter.getNextUniqueId((err, id) => {
+  
+    fs.writeFile(`${id}.txt`, text, (err) => {
+      if (err) {
+        throw ('error writing todo number ', id);
+      } else {
+        console.log(typeof `${id}.txt`);
+        callback(null, text);
+      }
+    });
+  });
 };
 
 exports.readAll = (callback) => {

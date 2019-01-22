@@ -38,15 +38,23 @@ const writeCounter = (count, callback) => {
 
 // Public API - Fix this function //////////////////////////////////////////////
 
-exports.getNextUniqueId = () => {
-  let counter = readCounter( (err, number) => {
-    let counter = number;
-    counter++;
-    writeCounter(counter, (err, number) => console.log('Created number: ', number) );
-    return;
-  } );
-  // console.log(counter);
-  return zeroPaddedNumber(counter);
+exports.getNextUniqueId = (callback) => {
+  readCounter( (err, number) => {
+    if (err) {
+      callback(err, number);
+    } else {
+      let counter = number;
+      counter++;
+      writeCounter(counter, (err, number) => {
+        if (err) {
+          callback(err, number);
+        } else {
+          // console.log('Created number: ', typeof number, '    and ', number);
+          callback(err, zeroPaddedNumber(number));
+        }
+      });
+    }
+  });
 };
 
 
